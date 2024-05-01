@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Application.Abtraction.Commands
+namespace Application.Models.User
 {
-    public interface ICommand
+    public class CreateUserRequest
     {
     }
-
 }

@@ -1,10 +1,10 @@
 ﻿using Domain.Entities;
 using Domain.Repositories;
 using Infracstructure.Datacontext;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using System;
 using System.Collections.Generic;
-using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
