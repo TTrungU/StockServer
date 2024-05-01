@@ -19,5 +19,8 @@ namespace Domain.Entities
         public string? Address { get; set; }
         public string Password { get; set; }
         public ICollection<Notification> Notifications { get; set; }
+        public ICollection<StockHold> StockHolds { get; set; }
+        public ICollection<Wallet> Wallets{ get; set; }
+        public ICollection<StockTransaction> StockTransactions { get;}
     }
 }

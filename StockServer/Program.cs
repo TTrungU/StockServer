@@ -1,5 +1,4 @@
 using Application.Abtraction.IServices;
-using Application.Service;
 using Application.Services;
 using Domain.Repositories;
 using Infracstructure.Datacontext;
@@ -20,7 +19,7 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 });
-
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //Cofigure DI
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
