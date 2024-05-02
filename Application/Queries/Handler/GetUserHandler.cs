@@ -1,11 +1,7 @@
 ﻿using Application.Abtraction.IServices;
 using Application.Models.User;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Application.Queries.Handler
 {
@@ -16,9 +12,9 @@ namespace Application.Queries.Handler
         {
             _userService = userService;
         }
-        public Task<UserResponse> Handle(GetUserQuery request, CancellationToken cancellationToken)
+        public async Task<UserResponse> Handle(GetUserQuery request, CancellationToken cancellationToken)
         {
-            throw new NotImplementedException();
+           return await _userService.GetUserByIdsAsync(request.UserId);
         }
     }
 }

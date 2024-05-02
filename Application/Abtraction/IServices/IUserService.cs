@@ -12,7 +12,7 @@ namespace Application.Abtraction.IServices
     {
         Task<IEnumerable<UserResponse>> GetAllUserAsync();
         Task<UserResponse> GetUserByIdsAsync(int id);
-        Task CreateUserAsync(User user);
+        Task CreateUserAsync(CreateUserRequest user);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(int id);
     }

@@ -14,6 +14,7 @@ namespace Infracstructure.Helper
         public MappingProfile()
         {
             CreateMap<User,UserResponse>().ReverseMap();
+            CreateMap<User,CreateUserRequest>().ReverseMap();
             
         }
     }

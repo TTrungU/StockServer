@@ -2,12 +2,9 @@
 using Application.Models.User;
 using AutoMapper;
 using Domain.Entities;
-using Domain.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Domain.Repositories; 
+using Application.Exceptions;
+
 
 namespace Application.Services
 {
@@ -20,9 +17,16 @@ namespace Application.Services
             _userRepository = userRepository;
             _mapper = mapper;
         }
-        public Task CreateUserAsync(User user)
+        public async Task CreateUserAsync(CreateUserRequest user)
         {
-            throw new NotImplementedException();
+            if(await _userRepository.IsEmailExist(user.Email))
+                throw new EmailExistExceptions(user.Email);
+
+            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+
+            _userRepository.Create(_mapper.Map<User>(user));
+
+            await _userRepository.SaveAsync();
         }
 
         public Task DeleteUserAsync(int id)
@@ -36,9 +40,12 @@ namespace Application.Services
             return _mapper.Map<IEnumerable<UserResponse>>(user);
         }
 
-        public Task<UserResponse> GetUserByIdsAsync(int id)
+        public async Task<UserResponse> GetUserByIdsAsync(int id)
         {
-            throw new NotImplementedException();
+            var user = await _userRepository.GetByIdAsync(id);
+            if (user == null)
+                throw new UserNotFoundException(id);
+            return _mapper.Map<UserResponse>(user);
         }
 
         public Task UpdateUserAsync(User user)

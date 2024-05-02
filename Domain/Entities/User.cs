@@ -18,6 +18,7 @@ namespace Domain.Entities
         public string? Gender { get; set; }
         public string? Address { get; set; }
         public string Password { get; set; }
+        public DateTime? CreateAt { get; set; }
         public ICollection<Notification> Notifications { get; set; }
         public ICollection<StockHold> StockHolds { get; set; }
         public ICollection<Wallet> Wallets{ get; set; }

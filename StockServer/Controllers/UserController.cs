@@ -1,9 +1,8 @@
-﻿using Application.Models.User;
+﻿using Application.Commands;
+using Application.Models.User;
 using Application.Queries;
-using Infracstructure.Dtos;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace StockServer.Controllers
 {
@@ -27,12 +26,21 @@ namespace StockServer.Controllers
         }
 
         [HttpGet]
+        [Route("userId")]
         [ProducesResponseType(200, Type = typeof(UserResponse))]
         public async Task<IActionResult> GetUser(int userId)
         {
             var query = new GetUserQuery(userId);
             var result = await _mediator.Send(query);
             return Ok(result);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> CreateUser(CreateUserRequest user)
+        {
+            var command = new CreateUserCommand(user);
+            await _mediator.Send(command);
+            return Ok();
         }
 
     }
