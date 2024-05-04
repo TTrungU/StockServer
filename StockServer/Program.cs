@@ -1,11 +1,14 @@
 using Application.Abtraction.IServices;
 using Application.Services;
+using Domain.IRepositories;
 using Domain.Repositories;
 using Infracstructure.Datacontext;
 using Infracstructure.Middleware;
+using Infracstructure.Model;
 using Infracstructure.Repositories;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,11 +24,21 @@ builder.Services.AddDbContext<DataContext>(options =>
     options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
 
 });
+
+builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection(nameof(MongoDBSettings)));
+
+builder.Services.AddSingleton<MongoDBContext>(serviceProvider =>
+{
+    var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+    return new MongoDBContext(settings.ConnectionString, settings.DatabaseName);
+});
+
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-//Cofigure DI
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
+
 
 
 var app = builder.Build();
