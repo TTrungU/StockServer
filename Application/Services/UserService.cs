@@ -17,21 +17,27 @@ namespace Application.Services
             _userRepository = userRepository;
             _mapper = mapper;
         }
-        public async Task CreateUserAsync(CreateUserRequest user)
+        public async Task CreateUserAsync(CreateUserRequest request)
         {
-            if(await _userRepository.IsEmailExist(user.Email))
-                throw new EmailExistExceptions(user.Email);
+            if(await _userRepository.IsEmailExist(request.Email))
+                throw new EmailExistExceptions(request.Email);
 
-            user.Password = BCrypt.Net.BCrypt.HashPassword(user.Password);
+            request.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-            _userRepository.Create(_mapper.Map<User>(user));
+            _userRepository.Create(_mapper.Map<User>(request));
 
             await _userRepository.SaveAsync();
         }
 
-        public Task DeleteUserAsync(int id)
+        public async Task DeleteUserAsync(int id)
         {
-            throw new NotImplementedException();
+            var user =  await _userRepository.GetByIdAsync(id);
+
+            if (user == null)
+                throw new UserNotFoundException(id);
+            _userRepository.Delete(user);
+
+            await _userRepository.SaveAsync();
         }
 
         public async Task<IEnumerable<UserResponse>> GetAllUserAsync()
@@ -43,14 +49,24 @@ namespace Application.Services
         public async Task<UserResponse> GetUserByIdsAsync(int id)
         {
             var user = await _userRepository.GetByIdAsync(id);
+
             if (user == null)
                 throw new UserNotFoundException(id);
             return _mapper.Map<UserResponse>(user);
         }
 
-        public Task UpdateUserAsync(User user)
-        {
-            throw new NotImplementedException();
+        public async Task UpdateUserAsync(UpdateUserRequest request)
+        {      
+            if(!await _userRepository.IsExist(u => u.Id == request.Id))
+                throw new UserNotFoundException(request.Id);     
+            
+            if(request.Email != null 
+                && await _userRepository.IsExist(u => u.Id != request.Id && u.Email ==request.Email))
+                throw new EmailExistExceptions(request.Email);
+
+            _userRepository.Update(_mapper.Map<User>(request));
+
+            await _userRepository.SaveAsync();
         }
     }
 }

@@ -12,8 +12,8 @@ namespace Application.Abtraction.IServices
     {
         Task<IEnumerable<UserResponse>> GetAllUserAsync();
         Task<UserResponse> GetUserByIdsAsync(int id);
-        Task CreateUserAsync(CreateUserRequest user);
-        Task UpdateUserAsync(User user);
+        Task CreateUserAsync(CreateUserRequest request);
+        Task UpdateUserAsync(UpdateUserRequest request);
         Task DeleteUserAsync(int id);
     }
 }

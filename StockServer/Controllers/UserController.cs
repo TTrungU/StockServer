@@ -8,7 +8,7 @@ namespace StockServer.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class UserController :ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IMediator _mediator;
         public UserController(IMediator mediator)
@@ -40,7 +40,22 @@ namespace StockServer.Controllers
         {
             var command = new CreateUserCommand(user);
             await _mediator.Send(command);
-            return Ok();
+            return NoContent();
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateUser(UpdateUserRequest user)
+        {
+            var command = new UpdateUserCommand(user);
+            await _mediator.Send(command);
+            return NoContent();
+        }
+        [HttpDelete]
+        public async Task<IActionResult> RemoveUser(int id)
+        {
+            var command = new RemoveUserCommand(id);
+            await _mediator.Send(command);
+            return NoContent();
         }
 
     }

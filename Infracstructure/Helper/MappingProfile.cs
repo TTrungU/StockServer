@@ -15,6 +15,7 @@ namespace Infracstructure.Helper
         {
             CreateMap<User,UserResponse>().ReverseMap();
             CreateMap<User,CreateUserRequest>().ReverseMap();
+            CreateMap<User, UpdateUserRequest>().ReverseMap();
             
         }
     }

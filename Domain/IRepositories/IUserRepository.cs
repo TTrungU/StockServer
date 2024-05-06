@@ -12,9 +12,6 @@ namespace Domain.Repositories
         Task<IEnumerable<User>> GetAllUserAsync();
         Task<User> GetByIdAsync(int userId);
 
-        void Create(User user);
-        void Update(User user);
-        void Delete(User user);
         Task<bool> IsEmailExist(string email);
         Task<bool> UserExist(int userId);
        
