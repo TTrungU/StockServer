@@ -1,4 +1,5 @@
-﻿using Application.Models.User;
+﻿using Application.Models.Notification;
+using Application.Models.User;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -16,6 +17,8 @@ namespace Infracstructure.Helper
             CreateMap<User,UserResponse>().ReverseMap();
             CreateMap<User,CreateUserRequest>().ReverseMap();
             CreateMap<User, UpdateUserRequest>().ReverseMap();
+            CreateMap<Notification, NotificationResponse>().ReverseMap();
+            CreateMap<Notification,CreateNotificationRequest>().ReverseMap();
             
         }
     }

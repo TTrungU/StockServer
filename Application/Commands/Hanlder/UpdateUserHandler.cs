@@ -20,7 +20,7 @@ namespace Application.Commands.Hanlder
 
         public async Task Handle(UpdateUserCommand request, CancellationToken cancellationToken)
         {
-            await _userService.UpdateUserAsync(request);
+            await _userService.UpdateUserAsync(request.userRequest);
         }
     }
 }

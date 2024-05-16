@@ -23,7 +23,11 @@ namespace Infracstructure.Repositories
             await _context.SaveChangesAsync();
         }
 
-      
+        public void Dispose()
+        {
+            throw new NotImplementedException();
+        }
+
         public async Task Rollback()
         {
             throw new NotImplementedException();
