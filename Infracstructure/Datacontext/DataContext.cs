@@ -18,6 +18,8 @@ namespace Infracstructure.Datacontext
         public DbSet<WalletHistory> walletHistories { get; set; }
         public DbSet<StockHold> StockHolds { get; set; }
         public DbSet<StockTransaction> StockTransactions { get; set; }
+        public DbSet<StockInfor> StockInfors { get; set; }
+        public DbSet<StockData> StockDatas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder) 
         {

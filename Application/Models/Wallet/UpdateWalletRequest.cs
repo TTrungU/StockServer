@@ -4,14 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Application.Models.Wallet
 {
-    public class Wallet :BaseEntity
+    public class UpdateWalletRequest
     {
+        public int Id { get; set; }
         public int? UserId { get; set; }
-        public decimal? Deposit { get; set; }
+        public decimal? deposit { get; set; }
         public string? status { get; set; }
-        public User? User { get; set; }
-        public ICollection<WalletHistory>? WalletHistories { get; set; }
     }
 }

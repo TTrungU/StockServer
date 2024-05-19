@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace Domain.IRepositories
 {
-    public interface IWalletRepository :IBaseRepository<Wallet>
+    public interface IStockInforRepository :IBaseRepository<StockInfor>
     {
-       Task<object> GetWalletAsync(int userId);
     }
 }

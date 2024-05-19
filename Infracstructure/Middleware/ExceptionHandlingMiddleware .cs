@@ -36,6 +36,7 @@ namespace Infracstructure.Middleware
                 NotFoundException => StatusCodes.Status404NotFound,
                 ConflictException => StatusCodes.Status409Conflict,
                 AuthenticationException => StatusCodes.Status401Unauthorized,
+                PaymentRequiredException => StatusCodes.Status402PaymentRequired,
                 _ => StatusCodes.Status500InternalServerError
             };
 

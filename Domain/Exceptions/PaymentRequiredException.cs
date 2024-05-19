@@ -6,10 +6,9 @@ using System.Threading.Tasks;
 
 namespace Domain.Exceptions
 {
-    public class NotFoundException: Exception
+    public class PaymentRequiredException:Exception
     {
-        public NotFoundException(string message)
-       : base(message)
+        public PaymentRequiredException(string message) : base(message)
         {
         }
     }

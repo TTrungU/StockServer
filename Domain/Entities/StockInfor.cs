@@ -8,13 +8,10 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class StockInfor
+    public class StockInfor:BaseEntity
     {
-        [BsonId]
-        [BsonRepresentation(BsonType.ObjectId)]
-        public string Id { get; set; }
-        public string Symbol { get; set; } 
-        public string Description { get; set; }
+        public string? Symbol { get; set; } 
+        public string? Description { get; set; }
         public ICollection<StockData> StockDatas { get; set; }
     }
 }
