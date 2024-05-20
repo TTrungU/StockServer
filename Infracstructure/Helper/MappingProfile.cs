@@ -1,4 +1,5 @@
 ﻿using Application.Models.Notification;
+using Application.Models.Transaciton;
 using Application.Models.User;
 using AutoMapper;
 using Domain.Entities;
@@ -19,6 +20,7 @@ namespace Infracstructure.Helper
             CreateMap<User, UpdateUserRequest>().ReverseMap();
             CreateMap<Notification, NotificationResponse>().ReverseMap();
             CreateMap<Notification,CreateNotificationRequest>().ReverseMap();
+            CreateMap<StockTransaction, CreateTransactionRequest>().ReverseMap();
             
         }
     }

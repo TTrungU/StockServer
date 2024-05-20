@@ -12,6 +12,6 @@ namespace Domain.Entities
     {
         public string? Symbol { get; set; } 
         public string? Description { get; set; }
-        public ICollection<StockData> StockDatas { get; set; }
+        public ICollection<StockData>? StockDatas { get; set; }
     }
 }

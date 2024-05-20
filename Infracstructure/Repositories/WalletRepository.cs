@@ -17,7 +17,7 @@ namespace Infracstructure.Repositories
         }
 
 
-        async Task<object> IWalletRepository.GetWalletAsync(int userId)
+        public async Task<object> GetWalletAsync(int userId)
         {
 
             DateTime today = DateTime.Today;
@@ -27,16 +27,16 @@ namespace Infracstructure.Repositories
                         join stockInfor in _context.StockInfors on stockHold.StockId equals stockInfor.Id
                         join stockData in _context.StockDatas on stockInfor.Id equals stockData.StockInforId
                         where stockHold.Status == "Holding" && user.Id == userId && stockData.Date == today 
-                        group new { wallet, stockHold, stockData } by new { wallet.Id, wallet.deposit } into g
+                        group new { wallet, stockHold, stockData } by new { wallet.Id, wallet.Deposit } into g
   
-                        let total = g.Key.deposit + g.Sum(x => x.stockData.Close * x.stockHold.Voulume)
+                        let total = g.Key.Deposit + g.Sum(x => x.stockData.Close * x.stockHold.Voulume)
                         let capital = g.Sum(x => x.stockHold.Price * x.stockHold.Voulume)
-                        let profit = total - capital - g.Key.deposit
+                        let profit = total - capital - g.Key.Deposit
                         let percent = capital != 0 ? (profit / capital) * 100 : 0
                         select new
                         {
                             WalletId = g.Key.Id,
-                            Deposit = g.Key.deposit,
+                            Deposit = g.Key.Deposit,
                             Total = total,
                             Capital = capital,
                             Profit = profit,

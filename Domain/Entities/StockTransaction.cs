@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +15,7 @@ namespace Domain.Entities
         public int? Quantity { get; set; }
         public decimal? TriggerPrice { get; set; }
         public DateTime? DateExpire { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreateAt { get; set; } 
         public string? Status { get; set; }
         public int? UserId { get; set; }

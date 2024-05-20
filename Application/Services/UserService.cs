@@ -24,7 +24,9 @@ namespace Application.Services
 
             request.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
-            _userRepository.Create(_mapper.Map<User>(request));
+            var user = _mapper.Map<User>(request);
+            user.Wallet = new Wallet { Deposit = 0 };
+            _userRepository.Create(user);
 
             await _userRepository.SaveAsync();
         }

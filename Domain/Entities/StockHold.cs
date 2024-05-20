@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,8 +16,9 @@ namespace Domain.Entities
         public decimal? Price { get; set; }
         public int? Voulume { get; set; }
         public string? Status { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreateAt { get; set; }
-        public User User { get; set; }
+        public User? User { get; set; }
 
 
 

@@ -18,7 +18,6 @@ namespace Domain.Entities
         public bool? Anomaly { get; set; }
         public string? Signal { get; set; }
         public decimal? LSTMPredict { get; set; }
-
         public int? StockInforId { get; set; }
         public StockInfor? StockInfor { get; set; }
 
