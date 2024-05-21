@@ -10,6 +10,6 @@ namespace Domain.IRepositories
 {
     public interface IStockTransacitonRespository : IBaseRepository<StockTransaction>
     {
-  
+        Task<IEnumerable<StockTransaction>> GetTransaction(int userId, string? type);
     }
 }

@@ -26,6 +26,7 @@ namespace Infracstructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreateAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.Property<string>("Description")
@@ -34,7 +35,7 @@ namespace Infracstructure.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("longtext");
 
-                    b.Property<int>("UserId")
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -44,6 +45,49 @@ namespace Infracstructure.Migrations
                     b.ToTable("Notifications");
                 });
 
+            modelBuilder.Entity("Domain.Entities.StockData", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<bool?>("Anomaly")
+                        .HasColumnType("tinyint(1)");
+
+                    b.Property<decimal?>("Close")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime?>("Date")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<decimal?>("High")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("LSTMPredict")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Low")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<decimal?>("Open")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<string>("Signal")
+                        .HasColumnType("longtext");
+
+                    b.Property<int?>("StockInforId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("Volumne")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("StockInforId");
+
+                    b.ToTable("StockDatas");
+                });
+
             modelBuilder.Entity("Domain.Entities.StockHold", b =>
                 {
                     b.Property<int>("Id")
@@ -51,6 +95,7 @@ namespace Infracstructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreateAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.Property<decimal?>("Price")
@@ -78,6 +123,23 @@ namespace Infracstructure.Migrations
                     b.ToTable("StockHolds");
                 });
 
+            modelBuilder.Entity("Domain.Entities.StockInfor", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("longtext");
+
+                    b.Property<string>("Symbol")
+                        .HasColumnType("longtext");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("StockInfors");
+                });
+
             modelBuilder.Entity("Domain.Entities.StockTransaction", b =>
                 {
                     b.Property<int>("Id")
@@ -85,7 +147,14 @@ namespace Infracstructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreateAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
+
+                    b.Property<DateTime?>("DateExpire")
+                        .HasColumnType("datetime(6)");
+
+                    b.Property<int?>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<string>("Status")
                         .HasColumnType("longtext");
@@ -93,8 +162,8 @@ namespace Infracstructure.Migrations
                     b.Property<string>("StockId")
                         .HasColumnType("longtext");
 
-                    b.Property<string>("Symbol")
-                        .HasColumnType("longtext");
+                    b.Property<int?>("StockInforId")
+                        .HasColumnType("int");
 
                     b.Property<decimal?>("TriggerPrice")
                         .HasColumnType("decimal(18,2)");
@@ -106,6 +175,8 @@ namespace Infracstructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("StockInforId");
 
                     b.HasIndex("UserId");
 
@@ -122,6 +193,7 @@ namespace Infracstructure.Migrations
                         .HasColumnType("longtext");
 
                     b.Property<DateTime?>("CreateAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.Property<DateTime?>("DateOfBirth")
@@ -150,7 +222,12 @@ namespace Infracstructure.Migrations
                     b.Property<string>("Regional")
                         .HasColumnType("longtext");
 
+                    b.Property<int?>("WalletId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("WalletId");
 
                     b.ToTable("Users");
                 });
@@ -161,11 +238,11 @@ namespace Infracstructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
+                    b.Property<decimal?>("Deposit")
+                        .HasColumnType("decimal(18,2)");
+
                     b.Property<int?>("UserId")
                         .HasColumnType("int");
-
-                    b.Property<decimal?>("deposit")
-                        .HasColumnType("decimal(18,2)");
 
                     b.Property<string>("status")
                         .HasColumnType("longtext");
@@ -184,6 +261,7 @@ namespace Infracstructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<DateTime?>("CreateAt")
+                        .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("datetime(6)");
 
                     b.Property<decimal?>("Deposit")
@@ -209,11 +287,18 @@ namespace Infracstructure.Migrations
                 {
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("Notifications")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("UserId");
 
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.StockData", b =>
+                {
+                    b.HasOne("Domain.Entities.StockInfor", "StockInfor")
+                        .WithMany("StockDatas")
+                        .HasForeignKey("StockInforId");
+
+                    b.Navigation("StockInfor");
                 });
 
             modelBuilder.Entity("Domain.Entities.StockHold", b =>
@@ -227,17 +312,32 @@ namespace Infracstructure.Migrations
 
             modelBuilder.Entity("Domain.Entities.StockTransaction", b =>
                 {
+                    b.HasOne("Domain.Entities.StockInfor", "StockInfor")
+                        .WithMany()
+                        .HasForeignKey("StockInforId");
+
                     b.HasOne("Domain.Entities.User", "User")
                         .WithMany("StockTransactions")
                         .HasForeignKey("UserId");
 
+                    b.Navigation("StockInfor");
+
                     b.Navigation("User");
+                });
+
+            modelBuilder.Entity("Domain.Entities.User", b =>
+                {
+                    b.HasOne("Domain.Entities.Wallet", "Wallet")
+                        .WithMany()
+                        .HasForeignKey("WalletId");
+
+                    b.Navigation("Wallet");
                 });
 
             modelBuilder.Entity("Domain.Entities.Wallet", b =>
                 {
                     b.HasOne("Domain.Entities.User", "User")
-                        .WithMany("Wallets")
+                        .WithMany()
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -252,6 +352,11 @@ namespace Infracstructure.Migrations
                     b.Navigation("Wallet");
                 });
 
+            modelBuilder.Entity("Domain.Entities.StockInfor", b =>
+                {
+                    b.Navigation("StockDatas");
+                });
+
             modelBuilder.Entity("Domain.Entities.User", b =>
                 {
                     b.Navigation("Notifications");
@@ -259,8 +364,6 @@ namespace Infracstructure.Migrations
                     b.Navigation("StockHolds");
 
                     b.Navigation("StockTransactions");
-
-                    b.Navigation("Wallets");
                 });
 
             modelBuilder.Entity("Domain.Entities.Wallet", b =>

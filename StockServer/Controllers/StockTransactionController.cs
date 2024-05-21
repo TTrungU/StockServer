@@ -1,5 +1,6 @@
 ﻿using Application.Commands;
 using Application.Models.Transaciton;
+using Application.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,6 +17,13 @@ namespace StockServer.Controllers
             _mediator = mediator;
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetTransaction(int userId, string? type)
+        {
+            var query = new GetTransactionQuery(userId, type);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
         [HttpPost]
         public async Task<IActionResult> CreateTransaction(CreateTransactionRequest request)
         { 

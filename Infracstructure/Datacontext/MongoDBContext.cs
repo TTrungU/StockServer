@@ -17,6 +17,6 @@ namespace Infracstructure.Datacontext
             var client = new MongoClient(connectionString);
             _database = client.GetDatabase(databaseName);
         }
-        public IMongoCollection<StockInfor> StockInfor => _database.GetCollection<StockInfor>("StockInfor");
+        //public IMongoCollection<StockInfor> StockInfor => _database.GetCollection<StockInfor>("StockInfor");
     }
 }

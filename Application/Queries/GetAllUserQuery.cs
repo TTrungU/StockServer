@@ -10,6 +10,6 @@ namespace Application.Queries
 {
     public class GetAllUserQuery : IRequest<IEnumerable<UserResponse>>
     {
-        
+    
     }
 }

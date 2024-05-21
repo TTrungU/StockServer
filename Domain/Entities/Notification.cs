@@ -15,6 +15,6 @@ namespace Domain.Entities
         [ DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreateAt { get; set; }
         public int? UserId { get; set; }
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

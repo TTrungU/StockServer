@@ -4,11 +4,12 @@ using Domain.IRepositories;
 using Domain.Repositories;
 using Infracstructure.Datacontext;
 using Infracstructure.Middleware;
-using Infracstructure.Model;
 using Infracstructure.Repositories;
-using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using Application.Models.Authenticate;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,22 +26,49 @@ builder.Services.AddDbContext<DataContext>(options =>
 
 });
 
-builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection(nameof(MongoDBSettings)));
+//builder.Services.Configure<MongoDBSettings>(builder.Configuration.GetSection(nameof(MongoDBSettings)));
 
-builder.Services.AddSingleton<MongoDBContext>(serviceProvider =>
-{
-    var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
-    return new MongoDBContext(settings.ConnectionString, settings.DatabaseName);
-});
+//builder.Services.AddSingleton<MongoDBContext>(serviceProvider =>
+//{
+//    var settings = serviceProvider.GetRequiredService<IOptions<MongoDBSettings>>().Value;
+//    return new MongoDBContext(settings.ConnectionString, settings.DatabaseName);
+//});
 
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddScoped<IUserRepository, UserRepository>();
-builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
-builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
+builder.Services.AddScoped<IAuthenticateService, AuthenticateService>();
+builder.Services.AddScoped<IStockTransacitonService, StockTransactionService>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<IWalletHistoryRepository, WalletHistoryRepository>();
+builder.Services.AddScoped<IStockHoldRepository, StockHoldRespository>();
+builder.Services.AddScoped<IStockTransacitonRespository, StockTransactionRepository>();
+builder.Services.AddScoped<IStockInforRepository, StockInforRepository>();
+builder.Services.AddScoped<IWalletRepository, WalletRepository>();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
+builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));
+
+builder.Services.AddAuthentication(opt => {
+    opt.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    opt.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "https://localhost:7142",
+            ValidAudience = "https://localhost:7142",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration.GetSection("AppSettings").Get<AppSettings>().Secret))
+        };
+    });
 
 
 var app = builder.Build();

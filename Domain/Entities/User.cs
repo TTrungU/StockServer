@@ -21,6 +21,7 @@ namespace Domain.Entities
         public string Password { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreateAt { get; set; }
+        [ForeignKey("Wallet")]
         public int? WalletId { get; set; }
         public Wallet? Wallet { get; set; }
         public ICollection<Notification>? Notifications { get; set; }

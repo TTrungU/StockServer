@@ -139,6 +139,12 @@ namespace Application.Services
             await _unitOfWork.Commit();
         }
 
+        public async Task<IEnumerable<StockTransaction>> GetTransaciton(int userId, string? type)
+        {
+            var transactions = await _stockTransacitonRespository.GetTransaction(userId, type);
+            return transactions;
+        }
+
         public async Task RemoveTracsaction(int transactionId)
         {
             var transaction = await _stockTransacitonRespository.FindByCondition(t => t.Id == transactionId).FirstOrDefaultAsync();
