@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Application.Queries
 {
-    public class GetStockInforQuery : IRequest<StockInfor>
+    public class GetStockInforQuery : IRequest<StockInforResponse>
     {
         public GetStockInforQuery(string symbol, DateTime? startDay, DateTime? endDay)
         {

@@ -13,5 +13,7 @@ namespace Domain.Constants
         public const string TransactionActivate = "Stock Transaction Activated";
         public const string TransactionCancel = "Stock Transaction Canceled";
         public const string TransactionExpired = "Stock Transaction Expired";
+        public const string WithdrawSuccess = "Withdraw Money Success";
+        public const string TopUpSuccess = "Top-Up Money Success";
     }
 }

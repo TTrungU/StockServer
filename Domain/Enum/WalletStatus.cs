@@ -9,6 +9,6 @@ namespace Domain.Enum
     public enum WalletStatus
     {
         Deposit,
-        withdraw
+        Withdraw
     }
 }

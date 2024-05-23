@@ -9,7 +9,7 @@ namespace Application.Abtraction.IServices
 {
     public interface IWalletService
     {
-        Task UpdateWallet(UpdateWalletRequest request);
+        Task UpdateWalletAsync(UpdateWalletRequest request);
         Task<WalletResponse> GetWalletAsync(int UserId);
     }
 }

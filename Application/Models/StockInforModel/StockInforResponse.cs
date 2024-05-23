@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Application.Models.StockInforModel
 {
-    public class StockInforRequest
+     public class StockInforResponse
     {
         public string? Symbol { get; set; }
         public string? Description { get; set; }
-        public ICollection<StockDataDto>? StockDataDtos { get; set; }
+        public ICollection<StockDataDto>? StockDatas { get; set; }
     }
 }

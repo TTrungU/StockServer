@@ -10,6 +10,7 @@ namespace Application.Abtraction.IServices
 {
     public interface IStockInforService
     {
-        Task<StockInfor> GetStockInfor(string symbol, DateTime? startDay, DateTime? endDay);
+        Task<StockInforResponse> GetStockInforAsync(string symbol, DateTime? startDay, DateTime? endDay);
+        Task<IEnumerable<StockInforResponse>> GetAllStockInforAsync();
     }
 }

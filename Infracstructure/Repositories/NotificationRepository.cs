@@ -23,7 +23,7 @@ namespace Infracstructure.Repositories
         {
             Expression<Func<Notification, bool>> expression = notification => notification.UserId == id;
 
-            return await FindByCondition(expression).OrderBy(n => n.CreateAt).ToListAsync();
+            return await FindByCondition(expression).OrderByDescending(n => n.CreateAt).ToListAsync();
         }
     }
 }

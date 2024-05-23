@@ -1,4 +1,5 @@
 ﻿using Application.Models.Notification;
+using Application.Models.StockInforModel;
 using Application.Models.Transaciton;
 using Application.Models.User;
 using AutoMapper;
@@ -21,6 +22,8 @@ namespace Infracstructure.Helper
             CreateMap<Notification, NotificationResponse>().ReverseMap();
             CreateMap<Notification,CreateNotificationRequest>().ReverseMap();
             CreateMap<StockTransaction, CreateTransactionRequest>().ReverseMap();
+            CreateMap<StockInforResponse, StockInfor>().ReverseMap();
+            CreateMap<StockDataDto,StockData>().ReverseMap();
             
         }
     }

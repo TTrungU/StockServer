@@ -4,7 +4,8 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Repositories; 
 using Application.Exceptions;
-
+using Microsoft.EntityFrameworkCore;
+using Domain.IRepositories;
 
 namespace Application.Services
 {
@@ -12,10 +13,12 @@ namespace Application.Services
     {
         private readonly IMapper _mapper;
         private readonly IUserRepository _userRepository;
-        public UserService(IMapper mapper, IUserRepository userRepository)
+        private readonly IWalletRepository _walletRepository;
+        public UserService(IMapper mapper, IUserRepository userRepository,IWalletRepository walletRepository)
         {
             _userRepository = userRepository;
             _mapper = mapper;
+            _walletRepository = walletRepository;
         }
         public async Task CreateUserAsync(CreateUserRequest request)
         {
@@ -25,10 +28,22 @@ namespace Application.Services
             request.Password = BCrypt.Net.BCrypt.HashPassword(request.Password);
 
             var user = _mapper.Map<User>(request);
-            user.Wallet = new Wallet { Deposit = 0 };
             _userRepository.Create(user);
-
             await _userRepository.SaveAsync();
+
+           var userId = await _userRepository.FindByCondition(u => u.Email == user.Email).Select(u => u.Id).FirstOrDefaultAsync();
+            var wallet = new Wallet()
+            {
+                Deposit = 0,
+                UserId = userId,
+                User = user,
+            };
+            if (wallet != null) 
+            {
+                _walletRepository.Create(wallet);
+                await _walletRepository.SaveAsync();          
+            }
+
         }
 
         public async Task DeleteUserAsync(int id)

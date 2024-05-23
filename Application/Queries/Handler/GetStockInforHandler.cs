@@ -1,4 +1,5 @@
 ﻿using Application.Abtraction.IServices;
+using Application.Models.StockInforModel;
 using Domain.Entities;
 
 using MediatR;
@@ -6,7 +7,7 @@ using MediatR;
 
 namespace Application.Queries.Handler
 {
-    public class GetStockInforHandler : IRequestHandler<GetStockInforQuery, StockInfor>
+    public class GetStockInforHandler : IRequestHandler<GetStockInforQuery, StockInforResponse>
     {
         private readonly IStockInforService _stockInforService;
 
@@ -15,9 +16,9 @@ namespace Application.Queries.Handler
             _stockInforService = stockInforService;
         }
 
-        public async Task<StockInfor> Handle(GetStockInforQuery request, CancellationToken cancellationToken)
+        public async Task<StockInforResponse> Handle(GetStockInforQuery request, CancellationToken cancellationToken)
         {
-            return await _stockInforService.GetStockInfor(request.Symbol,request.StartDay,request.EndDay);
+            return await _stockInforService.GetStockInforAsync(request.Symbol,request.StartDay,request.EndDay);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿
+﻿using Application.Models.Notification;
 using Application.Models.StockInforModel;
 using Application.Queries;
 using MediatR;
@@ -18,11 +18,22 @@ namespace StockServer.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetStockInforAsync(string Symbol, DateTime? startDay,DateTime? endDay) 
+        [ProducesResponseType(200, Type = typeof(StockInforResponse))]
+        public async Task<IActionResult> GetStockInfor(string Symbol, DateTime? startDay,DateTime? endDay) 
         {
             var query = new GetStockInforQuery(Symbol, startDay, endDay);
             var result = await _mediator.Send(query);
 
+            return Ok(result);
+        }
+
+        [HttpGet]
+        [Route("GetList")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<StockInforResponse>))]
+        public async Task<IActionResult> GetListStocks()
+        { 
+            var query = new GetListStockInforQuery();
+            var result = await _mediator.Send(query);
             return Ok(result);
         }
     }

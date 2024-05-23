@@ -14,6 +14,29 @@ namespace Infracstructure.Repositories
         {
         }
 
+        public async Task<IEnumerable<StockInfor>?> GetListStockInfor()
+        {
+            DateTime? mostRecentDate = await _context.StockDatas.MaxAsync(sd => sd.Date);         
+            DateTime startDay = mostRecentDate.Value.AddDays(-30);
+
+
+            var query = from stockInfor in _context.StockInfors
+                        join stockData in _context.StockDatas on stockInfor.Id equals stockData.StockInforId
+                        where stockData.Date >= startDay
+                        group stockData by new {stockInfor.Id, stockInfor.Symbol } into g
+                        select new StockInfor
+                        {
+                            Id = g.Key.Id,
+                            Symbol = g.Key.Symbol,
+                            StockDatas = g.Select(s => new StockData
+                            {
+                                Date = s.Date,
+                                Close = s.Close,
+                            }).OrderByDescending(s => s.Date).ToList()
+                        };
+            return await query.ToListAsync();
+        }
+
         public async Task<StockInfor?> GetSotckData(string symbol, DateTime? dayStart, DateTime? dayEnd)
         {
             var query = from stockInfor in _context.StockInfors

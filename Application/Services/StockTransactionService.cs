@@ -119,7 +119,7 @@ namespace Application.Services
                     WalletId = wallet.Id,
                     Description = $"+ {total}VND |" +
                                                 $" Sell stock: {request.Symbol} |" +
-                                                $" Balance: {wallet.Deposit} |" +
+                                                $" Balance: {wallet.Deposit} VND |" +
                                                 $" Date: {DateTime.Now} "
                 };
                 var notificaiton = new Notification
