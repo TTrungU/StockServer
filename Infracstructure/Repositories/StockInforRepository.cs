@@ -17,7 +17,7 @@ namespace Infracstructure.Repositories
         public async Task<IEnumerable<StockInfor>?> GetListStockInfor()
         {
             DateTime? mostRecentDate = await _context.StockDatas.MaxAsync(sd => sd.Date);         
-            DateTime startDay = mostRecentDate.Value.AddDays(-30);
+            DateTime startDay = mostRecentDate.Value.AddDays(-365);
 
 
             var query = from stockInfor in _context.StockInfors
@@ -32,7 +32,7 @@ namespace Infracstructure.Repositories
                             {
                                 Date = s.Date,
                                 Close = s.Close,
-                            }).OrderByDescending(s => s.Date).ToList()
+                            }).OrderBy(s => s.Date).ToList()
                         };
             return await query.ToListAsync();
         }
@@ -53,7 +53,7 @@ namespace Infracstructure.Repositories
                             {
                                 Date = s.Date,
                                 Close = s.Close,
-                            }).ToList()
+                            }).OrderBy(s=>s.Date).ToList()
                         };
             return await query.FirstOrDefaultAsync();
         }

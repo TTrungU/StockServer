@@ -1,16 +1,15 @@
-﻿using Domain.Entities;
-using Domain.Model;
-using Domain.Repositories;
+﻿using Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.IRepositories
+namespace Application.Abtraction.IServices
 {
-    public interface IStockHoldRepository: IBaseRepository<StockHold>
+    public interface IStockHoldService
     {
         Task<IEnumerable<StockHoldRespond>> GetStockHoldsAsync(int userId);
+        
     }
 }

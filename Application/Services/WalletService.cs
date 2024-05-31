@@ -6,6 +6,7 @@ using Domain.Entities;
 using Domain.Enum;
 using Domain.Exceptions;
 using Domain.IRepositories;
+using Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -30,10 +31,17 @@ namespace Application.Services
             _unitOfWork = unitOfWork;
         }
 
-        public Task<WalletResponse> GetWalletAsync(int UserId)
+        public async Task<WalletResponse> GetWalletAsync(int UserId)
         {
 
-            throw new NotImplementedException();
+            var wallet = await _walletRepository.GetWalletAsync(UserId);
+            if (wallet == null) 
+            {
+                throw new NotFoundException("Wallet not found");
+            }
+            return wallet;
+
+            
         }
 
         public async Task UpdateWalletAsync(UpdateWalletRequest request)
@@ -44,7 +52,10 @@ namespace Application.Services
             {
                 throw new NotFoundException("Wallet not found");
             }
-
+            if (request.Deposit <= 10000)
+            {
+                throw new PaymentRequiredException("The amount to make a transaction is at least 10,000 VND.");
+           }
 
             if (request.Status == WalletStatus.Deposit.ToString())
             {
@@ -92,7 +103,7 @@ namespace Application.Services
                 var notification = new Notification()
                 {
                     UserId = wallet.UserId,
-                    Title = NotificaitonTitle.TopUpSuccess,
+                    Title = NotificaitonTitle.WithdrawSuccess,
                     Description = $"Withdrew {request.Deposit} VND to wallet success"
 
                 };

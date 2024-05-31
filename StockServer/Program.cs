@@ -49,6 +49,7 @@ builder.Services.AddScoped<IStockHoldRepository, StockHoldRespository>();
 builder.Services.AddScoped<IStockTransacitonRespository, StockTransactionRepository>();
 builder.Services.AddScoped<IStockInforRepository, StockInforRepository>();
 builder.Services.AddScoped<IWalletRepository, WalletRepository>();
+builder.Services.AddScoped<IStockHoldService, StockHoldService>();
 builder.Services.AddTransient<ExceptionHandlingMiddleware>();
 
 builder.Services.Configure<AppSettings>(builder.Configuration.GetSection("AppSettings"));

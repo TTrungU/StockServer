@@ -1,5 +1,7 @@
 ﻿using Application.Commands;
 using Application.Models.Wallet;
+using Application.Queries;
+using Domain.Model;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +17,14 @@ namespace StockServer.Controllers
         {
             _mediator = mediator;
         }
-
+        [HttpGet]
+        [ProducesResponseType(200, Type = typeof(WalletResponse))]
+        public async Task<IActionResult> GetWallet(int UserId)
+        {
+            var query = new GetWalletQuery(UserId);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
         [HttpPut]
         public async Task<IActionResult> UpdateWallet(UpdateWalletRequest request)
         {

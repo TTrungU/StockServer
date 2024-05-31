@@ -1,5 +1,6 @@
 ﻿using Domain.Entities;
 using Domain.IRepositories;
+using Domain.Model;
 using Infracstructure.Datacontext;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -17,33 +18,33 @@ namespace Infracstructure.Repositories
         }
 
 
-        public async Task<object> GetWalletAsync(int userId)
+        public async Task<WalletResponse> GetWalletAsync(int userId)
         {
+            var userWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.UserId == userId);
+                if (userWallet == null) return null;
+            var userStockHolds = await _context.StockHolds.Where(sh => sh.UserId == userId && sh.Status =="Holding").ToListAsync();
 
-            DateTime today = DateTime.Today;
-            var query = from user in _context.Users
-                        join wallet in _context.Wallets on user.Id equals wallet.Id
-                        join stockHold in _context.StockHolds on user.Id equals stockHold.UserId
-                        join stockInfor in _context.StockInfors on stockHold.StockId equals stockInfor.Id
-                        join stockData in _context.StockDatas on stockInfor.Id equals stockData.StockInforId
-                        where stockHold.Status == "Holding" && user.Id == userId && stockData.Date == today 
-                        group new { wallet, stockHold, stockData } by new { wallet.Id, wallet.Deposit } into g
-  
-                        let total = g.Key.Deposit + g.Sum(x => x.stockData.Close * x.stockHold.Voulume)
-                        let capital = g.Sum(x => x.stockHold.Price * x.stockHold.Voulume)
-                        let profit = total - capital - g.Key.Deposit
-                        let percent = capital != 0 ? (profit / capital) * 100 : 0
-                        select new
-                        {
-                            WalletId = g.Key.Id,
-                            Deposit = g.Key.Deposit,
-                            Total = total,
-                            Capital = capital,
-                            Profit = profit,
-                            PercentProfit = percent
+            var latestStocks = await _context.StockDatas
+               .GroupBy(s => s.StockInforId)
+               .Select(g => g.OrderByDescending(s => s.Date).FirstOrDefault())
+               .ToDictionaryAsync(s => s?.StockInforId, s => s?.Close);
 
-                        };
-            return await query.FirstOrDefaultAsync();
+            decimal? capital = userStockHolds.Sum(sh => sh.Price * sh.Voulume);
+            decimal? total = userWallet.Deposit + userStockHolds.Sum(sh => latestStocks.TryGetValue(sh.StockId, out var closePrice) ? closePrice * sh.Voulume : 0);
+
+            decimal? profit = total - capital - userWallet.Deposit;
+            decimal? percent = capital != 0 ? (profit / capital) * 100 : 0;
+
+            return new WalletResponse()
+            {
+                UserId = userId,
+                Id = userWallet.Id,
+                Total = total,
+                Capital = capital,
+                Profit = profit,
+                Balance = userWallet.Deposit,
+                PercentProfit = percent
+            };
         }
     }
 }
