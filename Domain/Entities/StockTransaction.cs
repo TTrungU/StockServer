@@ -14,6 +14,8 @@ namespace Domain.Entities
         public string? Type { get; set; }
         public int? Quantity { get; set; }
         public decimal? TriggerPrice { get; set; }
+        public decimal? Price { get; set; }
+        public decimal? Investment { get; set; }
         public DateTime? DateExpire { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreateAt { get; set; } 

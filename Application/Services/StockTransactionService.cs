@@ -53,10 +53,7 @@ namespace Application.Services
         public async Task CreateTransaction(CreateTransactionRequest request)
         {
             var wallet = await _walletRepository.FindByCondition(w => w.UserId == request.UserId).FirstOrDefaultAsync();
-            var stock = await _stockHoldRepository.FindByCondition(s => s.UserId == request.UserId
-                                                         && s.StockId == request.StockId
-                                                         && s.Status == StockStatus.Holding.ToString()).
-                                                         FirstOrDefaultAsync();
+          
 
             if (wallet == null)     
                 throw new NotFoundException("Wallet not found");
@@ -64,15 +61,19 @@ namespace Application.Services
             if (wallet.Deposit < request.Quantity * request.TriggerPrice && request.Type == TransactionType.Buy.ToString())
                 throw new PaymentRequiredException("Not enough money to excute the transaction");
 
+            var transaciton = _mapper.Map<StockTransaction>(request);
+
             var total = request.Quantity * request.Price;
-            //boy sotck
+            //buy sotck
             if (request.Type == TransactionType.Buy.ToString() && request.Price == request.TriggerPrice )
             {
+                transaciton.Status = TransactionStatus.Success.ToString();
                 wallet.Deposit -= total;
                 var walletHistory = new WalletHistory
                 {
                     Deposit = wallet.Deposit,
                     WalletId = wallet.Id,
+                    CreateAt = DateTime.Now,
                     Description = $"- {total}VND |" +
                                                 $" Buy stock: {request.Symbol} |" +
                                                 $" Balance: {wallet.Deposit} |" +
@@ -82,26 +83,24 @@ namespace Application.Services
                 {
                     UserId = request.UserId,
                     Title = NotificaitonTitle.TransactionSuccess,
-                    Description = $"Buy stock {request.Symbol} successed with value: {total}"
+                    Description = $"Buy stock {request.Symbol} successed with value: {total}",
+                    CreateAt = DateTime.Now
                 };
-                if (stock == null)
-                {
-                    var stockHold = new StockHold
-                    {
-                        Price = request.Price,
-                        StockSymbol = request.Symbol,
-                        UserId = request.UserId,
-                        StockId = request.StockId,
-                        Voulume = request.Quantity,
-                        Status = StockStatus.Holding.ToString(),
-                    };
-                    _stockHoldRepository.Create(stockHold);
-                } else {
-                    stock.Voulume += request.Quantity;
-                    _stockHoldRepository.Update(stock);
-                }
                 
-                      
+               
+                var stockHold = new StockHold
+                {
+                    Price = request.Price,
+                    StockSymbol = request.Symbol,
+                    UserId = request.UserId,
+                    StockId = request.StockId,
+                    Voulume = request.Quantity,
+                    Status = StockStatus.Holding.ToString(),
+                    CreateAt = DateTime.Now
+                };
+                 
+                
+                _stockHoldRepository.Create(stockHold);                                                  
                 _notificationRepository.Create(notificaiton);
                 _walletHistoryRepository.Create(walletHistory);
                 _walletRepository.Update(wallet);
@@ -109,7 +108,13 @@ namespace Application.Services
             //Sell stock
             if (request.Type == TransactionType.Sell.ToString() && request.Price == request.TriggerPrice)
             {
-                if (stock == null || stock.Voulume < request.Quantity)
+                var stockHolds = await _stockHoldRepository.FindByCondition(s => s.UserId == request.UserId
+                                                       && s.StockId == request.StockInforId
+                                                       && s.Status == StockStatus.Holding.ToString())
+                                                       .OrderBy(s => s.CreateAt)
+                                                       .ToListAsync();
+
+                if (stockHolds == null || stockHolds.Sum(s => s.Voulume) < request.Quantity)
                     throw new PaymentRequiredException($"Your {request.Symbol} stock quantity not enough to sell");
 
                 wallet.Deposit += total;
@@ -128,14 +133,44 @@ namespace Application.Services
                     Title = NotificaitonTitle.TransactionSuccess,
                     Description = $"Sell stock {request.Symbol} successed with value: {total}"
                 };
+                var unit = request.Quantity;
+                transaciton.Investment = 0;
+                foreach (var s in stockHolds)
+                {
+                    if (s.Voulume > unit)
+                    {
+                        transaciton.Investment += request.TriggerPrice * request.Quantity - s.Price * unit;
+                        s.Voulume -= unit;
+                        _stockHoldRepository.Update(s);
+                        break;
 
-                stock.Voulume += request.Quantity;
-                _stockHoldRepository.Update(stock);
+                    }
+
+                    if (s.Voulume == unit)
+                    {
+                        transaciton.Investment += request.TriggerPrice * request.Quantity - s.Price * unit;
+                        s.Voulume -= unit;
+                        s.Status = StockStatus.Selled.ToString();
+                        _stockHoldRepository.Update(s);
+                        break;
+                    }
+
+                    if (s.Voulume < unit)
+                    {
+                        s.Voulume = 0;
+                        unit -= s.Voulume;
+                        transaciton.Investment += request.TriggerPrice * request.Quantity - s.Price * unit;
+                        s.Status = s.Status = StockStatus.Selled.ToString();
+                        _stockHoldRepository.Update(s);
+                    }                      
+                }
+                transaciton.Status = TransactionStatus.Success.ToString();
                 _notificationRepository.Create(notificaiton); 
                 _walletHistoryRepository.Create(walletHistory);
                 _walletRepository.Update(wallet);
-            }
-            _stockTransacitonRespository.Create(_mapper.Map<StockTransaction>(request));
+
+            }            
+            _stockTransacitonRespository.Create(transaciton);
             await _unitOfWork.Commit();
         }
 

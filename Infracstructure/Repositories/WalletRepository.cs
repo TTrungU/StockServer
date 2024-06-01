@@ -1,13 +1,10 @@
 ﻿using Domain.Entities;
+using Domain.Enum;
 using Domain.IRepositories;
 using Domain.Model;
 using Infracstructure.Datacontext;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Infracstructure.Repositories
 {
@@ -22,15 +19,20 @@ namespace Infracstructure.Repositories
         {
             var userWallet = await _context.Wallets.FirstOrDefaultAsync(w => w.UserId == userId);
                 if (userWallet == null) return null;
+
             var userStockHolds = await _context.StockHolds.Where(sh => sh.UserId == userId && sh.Status =="Holding").ToListAsync();
+
+            var stockTransaction = await _context.StockTransactions.Where(t => t.UserId == userId &&
+                                                                            t.Type == TransactionType.Buy.ToString() &&
+                                                                            t.Status == TransactionStatus.Success.ToString()).ToListAsync();
 
             var latestStocks = await _context.StockDatas
                .GroupBy(s => s.StockInforId)
                .Select(g => g.OrderByDescending(s => s.Date).FirstOrDefault())
                .ToDictionaryAsync(s => s?.StockInforId, s => s?.Close);
 
-            decimal? capital = userStockHolds.Sum(sh => sh.Price * sh.Voulume);
-            decimal? total = userWallet.Deposit + userStockHolds.Sum(sh => latestStocks.TryGetValue(sh.StockId, out var closePrice) ? closePrice * sh.Voulume : 0);
+            decimal? capital = stockTransaction.Sum(sh => sh.TriggerPrice * sh.Quantity);
+            decimal? total = userWallet.Deposit + stockTransaction.Sum(sh => latestStocks.TryGetValue(sh.StockInforId, out var closePrice) ? closePrice * sh.Quantity : 0);
 
             decimal? profit = total - capital - userWallet.Deposit;
             decimal? percent = capital != 0 ? (profit / capital) * 100 : 0;
