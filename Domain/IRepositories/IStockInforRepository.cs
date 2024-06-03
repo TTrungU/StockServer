@@ -1,4 +1,5 @@
 ﻿using Domain.Entities;
+using Domain.Model;
 using Domain.Repositories;
 using System;
 using System.Collections.Generic;
@@ -12,5 +13,6 @@ namespace Domain.IRepositories
     {
         Task<StockInfor?> GetSotckData(string symbol, DateTime? dayStart, DateTime? dayEnd);
         Task<IEnumerable<StockInfor>?> GetListStockInfor();
+        Task<StockInforDetailResponse?> GetDetailStockInfor(int stockInforId);
     }
 }

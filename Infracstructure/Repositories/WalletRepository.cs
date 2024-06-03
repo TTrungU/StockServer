@@ -22,8 +22,11 @@ namespace Infracstructure.Repositories
 
             var userStockHolds = await _context.StockHolds.Where(sh => sh.UserId == userId && sh.Status =="Holding").ToListAsync();
 
-            var stockTransaction = await _context.StockTransactions.Where(t => t.UserId == userId &&
+            var sellTransaction = await _context.StockTransactions.Where(t => t.UserId == userId &&
                                                                             t.Type == TransactionType.Buy.ToString() &&
+                                                                            t.Status == TransactionStatus.Success.ToString()).ToListAsync();
+            var buyTransactions = await  _context.StockTransactions.Where(t => t.UserId == userId &&
+                                                                            t.Type == TransactionType.Sell.ToString() &&
                                                                             t.Status == TransactionStatus.Success.ToString()).ToListAsync();
 
             var latestStocks = await _context.StockDatas
@@ -31,10 +34,10 @@ namespace Infracstructure.Repositories
                .Select(g => g.OrderByDescending(s => s.Date).FirstOrDefault())
                .ToDictionaryAsync(s => s?.StockInforId, s => s?.Close);
 
-            decimal? capital = stockTransaction.Sum(sh => sh.TriggerPrice * sh.Quantity);
-            decimal? total = userWallet.Deposit + stockTransaction.Sum(sh => latestStocks.TryGetValue(sh.StockInforId, out var closePrice) ? closePrice * sh.Quantity : 0);
+            decimal? capital = sellTransaction.Sum(sh => sh.TriggerPrice * sh.Quantity);
+            decimal? total = userWallet.Deposit + sellTransaction.Sum(sh => latestStocks.TryGetValue(sh.StockInforId, out var closePrice) ? closePrice * sh.Quantity : 0);
 
-            decimal? profit = total - capital - userWallet.Deposit;
+            decimal? profit = buyTransactions.Sum(s => s.Investment);
             decimal? percent = capital != 0 ? (profit / capital) * 100 : 0;
 
             return new WalletResponse()

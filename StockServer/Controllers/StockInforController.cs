@@ -1,6 +1,7 @@
 ﻿using Application.Models.Notification;
 using Application.Models.StockInforModel;
 using Application.Queries;
+using Domain.Model;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,6 +16,16 @@ namespace StockServer.Controllers
         public StockInforController(IMediator mediator)
         {
             _mediator = mediator;
+        }
+
+
+        [HttpGet("stockInforId")]
+        [ProducesResponseType(200, Type = typeof(StockInforDetailResponse))]
+        public async Task<IActionResult> GetStockInforDetail(int stockinforId)
+        {
+            var query = new GetStockInforDetailQuery(stockinforId);
+            var result = await _mediator.Send(query);
+            return Ok(result);
         }
 
         [HttpGet]

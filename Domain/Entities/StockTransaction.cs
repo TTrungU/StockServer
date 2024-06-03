@@ -10,7 +10,6 @@ namespace Domain.Entities
 {
     public class StockTransaction:BaseEntity
     {
-        public string? StockId { get; set; }
         public string? Type { get; set; }
         public int? Quantity { get; set; }
         public decimal? TriggerPrice { get; set; }

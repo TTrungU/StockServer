@@ -8,7 +8,6 @@ namespace Application.Models.Transaciton
 {
     public class CreateTransactionRequest
     {
-        public int? StockId { get; set; }
         public string? Symbol { get; set; }
         public string? Type { get; set; }
         public int? Quantity { get; set; }

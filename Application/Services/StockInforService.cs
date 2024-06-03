@@ -4,6 +4,7 @@ using AutoMapper;
 using Domain.Entities;
 using Domain.Exceptions;
 using Domain.IRepositories;
+using Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -38,6 +39,15 @@ namespace Application.Services
                 throw new NotFoundException("Data not found");
             
             return _mapper.Map<StockInforResponse>(stock);
+        }
+
+        public async Task<StockInforDetailResponse> GetStockInforDetatilAsync(int stockInforId)
+        {
+            var stockinfor = await _stockInforRepository.GetDetailStockInfor(stockInforId);
+            if (stockinfor == null)
+                throw new NotFoundException("Not found stock");
+            return stockinfor;
+
         }
     }
 }

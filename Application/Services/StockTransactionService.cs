@@ -93,7 +93,7 @@ namespace Application.Services
                     Price = request.Price,
                     StockSymbol = request.Symbol,
                     UserId = request.UserId,
-                    StockId = request.StockId,
+                    StockId = request.StockInforId,
                     Voulume = request.Quantity,
                     Status = StockStatus.Holding.ToString(),
                     CreateAt = DateTime.Now

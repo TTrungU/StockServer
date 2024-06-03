@@ -1,5 +1,6 @@
 ﻿using Application.Models.StockInforModel;
 using Domain.Entities;
+using Domain.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,5 +13,6 @@ namespace Application.Abtraction.IServices
     {
         Task<StockInforResponse> GetStockInforAsync(string symbol, DateTime? startDay, DateTime? endDay);
         Task<IEnumerable<StockInforResponse>> GetAllStockInforAsync();
+        Task<StockInforDetailResponse> GetStockInforDetatilAsync(int stockInforId);
     }
 }
