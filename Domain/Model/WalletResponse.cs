@@ -12,6 +12,7 @@ namespace Domain.Model
         public decimal? Balance { get; set; }
         public decimal? Total { get; set; }
         public decimal? Profit { get; set; }
+        public decimal? ListedSecurities { get; set; }
         public decimal? Capital { get; set; }
         public string? Status { get; set; }
         public decimal? PercentProfit { get; set; }

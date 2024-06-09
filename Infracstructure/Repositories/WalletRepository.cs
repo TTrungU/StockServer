@@ -22,10 +22,10 @@ namespace Infracstructure.Repositories
 
             var userStockHolds = await _context.StockHolds.Where(sh => sh.UserId == userId && sh.Status =="Holding").ToListAsync();
 
-            var sellTransaction = await _context.StockTransactions.Where(t => t.UserId == userId &&
+            var buyTransaction = await _context.StockTransactions.Where(t => t.UserId == userId &&
                                                                             t.Type == TransactionType.Buy.ToString() &&
                                                                             t.Status == TransactionStatus.Success.ToString()).ToListAsync();
-            var buyTransactions = await  _context.StockTransactions.Where(t => t.UserId == userId &&
+            var sellTransactions = await  _context.StockTransactions.Where(t => t.UserId == userId &&
                                                                             t.Type == TransactionType.Sell.ToString() &&
                                                                             t.Status == TransactionStatus.Success.ToString()).ToListAsync();
 
@@ -34,10 +34,10 @@ namespace Infracstructure.Repositories
                .Select(g => g.OrderByDescending(s => s.Date).FirstOrDefault())
                .ToDictionaryAsync(s => s?.StockInforId, s => s?.Close);
 
-            decimal? capital = sellTransaction.Sum(sh => sh.TriggerPrice * sh.Quantity);
-            decimal? total = userWallet.Deposit + sellTransaction.Sum(sh => latestStocks.TryGetValue(sh.StockInforId, out var closePrice) ? closePrice * sh.Quantity : 0);
-
-            decimal? profit = buyTransactions.Sum(s => s.Investment);
+            decimal? capital = userStockHolds.Sum(sh => sh.Voulume * sh.Price);
+            decimal? listedSecurities = userStockHolds.Sum(sh => latestStocks.TryGetValue(sh.StockId, out var closePrice) ? closePrice * sh.Voulume : 0);
+            decimal? total = userWallet.Deposit + listedSecurities;
+            decimal? profit = (listedSecurities - capital);
             decimal? percent = capital != 0 ? (profit / capital) * 100 : 0;
 
             return new WalletResponse()
@@ -45,6 +45,7 @@ namespace Infracstructure.Repositories
                 UserId = userId,
                 Id = userWallet.Id,
                 Total = total,
+                ListedSecurities = listedSecurities,
                 Capital = capital,
                 Profit = profit,
                 Balance = userWallet.Deposit,

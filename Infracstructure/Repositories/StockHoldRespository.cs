@@ -35,6 +35,7 @@ namespace Infracstructure.Repositories
                                   var totalVolume = g.Sum(sh => sh.Voulume);
                                   var totalPrice = g.Sum(sh => sh.Voulume * (latestStocks.TryGetValue(sh.StockId, out var closePrice) ? closePrice : 0));
                                   var totalCost = g.Sum(sh => sh.Voulume * sh.Price);
+                                  
                                   var percentProfit = totalCost != 0 ? ((totalPrice - totalCost) / totalCost) * 100 : 0;
 
                                   return new StockHoldRespond
@@ -42,6 +43,7 @@ namespace Infracstructure.Repositories
                                       UserId = userId,
                                       StockId = g.Key.StockId,
                                       StockSymbol = g.Key.StockSymbol,
+                                      Totalcapital = totalCost,
                                       Total = totalPrice,
                                       Unit = totalVolume,
                                       Percent = percentProfit,

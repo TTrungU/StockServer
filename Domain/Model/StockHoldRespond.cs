@@ -14,6 +14,7 @@ namespace Domain.Model
         public int? StockId { get; set; }
         public string? StockSymbol { get; set; }
         public decimal? Total { get; set; }
+        public decimal? Totalcapital { get; set; }
         public int? Unit { get; set; }
         public decimal? Percent { get; set; }
     }

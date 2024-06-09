@@ -2,6 +2,7 @@
 using Application.Models.StockInforModel;
 using Application.Models.Transaciton;
 using Application.Models.User;
+using Application.Models.WalletHistory;
 using AutoMapper;
 using Domain.Entities;
 using System;
@@ -24,6 +25,7 @@ namespace Infracstructure.Helper
             CreateMap<StockTransaction, CreateTransactionRequest>().ReverseMap();
             CreateMap<StockInforResponse, StockInfor>().ReverseMap();
             CreateMap<StockDataDto,StockData>().ReverseMap();
+            CreateMap<WalletHistoryResponse, WalletHistory>().ReverseMap();
             
         }
     }
