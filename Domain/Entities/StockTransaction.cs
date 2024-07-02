@@ -16,13 +16,17 @@ namespace Domain.Entities
         public decimal? Price { get; set; }
         public decimal? Investment { get; set; }
         public DateTime? DateExpire { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreateAt { get; set; } 
         public string? Status { get; set; }
         public int? UserId { get; set; }
         public int? StockInforId { get; set; }
         public StockInfor? StockInfor { get; set; }
         public User? User { get; set; }
+
+        public StockTransaction()
+        {
+            this.CreateAt = DateTime.UtcNow;
+        }
 
     }
 }

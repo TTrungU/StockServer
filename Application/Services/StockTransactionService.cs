@@ -7,11 +7,7 @@ using Domain.Enum;
 using Domain.Exceptions;
 using Domain.IRepositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Application.Services
 {
@@ -87,7 +83,7 @@ namespace Application.Services
                     CreateAt = DateTime.Now
                 };
                 
-               
+                
                 var stockHold = new StockHold
                 {
                     Price = request.Price,
@@ -148,6 +144,7 @@ namespace Application.Services
 
                     if (s.Voulume == unit)
                     {
+                     
                         transaciton.Investment += request.TriggerPrice * request.Quantity - s.Price * unit;
                         s.Voulume -= unit;
                         s.Status = StockStatus.Selled.ToString();

@@ -12,10 +12,14 @@ namespace Domain.Entities
     {
         public decimal? Deposit { get; set; }
         public string? Description { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreateAt { get; set; }
         public string? Status { get; set; }
         public int? WalletId { get; set; }
         public Wallet? Wallet { get; set; }
+
+        public WalletHistory()
+        {
+            this.CreateAt = DateTime.UtcNow;
+        }
     }
 }

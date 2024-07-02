@@ -16,10 +16,13 @@ namespace Domain.Entities
         public decimal? Price { get; set; }
         public int? Voulume { get; set; }
         public string? Status { get; set; }
-        [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime? CreateAt { get; set; }
         public User? User { get; set; }
 
+        public StockHold()
+        {
+            this.CreateAt = DateTime.UtcNow;
+        }
 
 
     }
