@@ -1,6 +1,7 @@
 ﻿using Application.Models.Notification;
 using Application.Models.StockInforModel;
 using Application.Queries;
+using Application.Queries.Handler;
 using Domain.Model;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -24,6 +25,22 @@ namespace StockServer.Controllers
         public async Task<IActionResult> GetStockInforDetail(int stockinforId)
         {
             var query = new GetStockInforDetailQuery(stockinforId);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        [HttpGet("Search/symbol")]
+        [ProducesResponseType(200, Type = typeof(HyperLink))]
+        public async Task<IActionResult> SearchStockInfor(string symbol)
+        {
+            var query = new SearchStockInforQuery(symbol);
+            var result = await _mediator.Send(query);
+            return Ok(result);
+        }
+        [HttpGet("Daily/stockInforId")]
+        [ProducesResponseType(200, Type = typeof(IEnumerable<HyperLink>))]
+        public async Task<IActionResult> GetStockInforSummary(int stockinforId)
+        {
+            var query = new GetStockInforBySearchQuery(stockinforId);
             var result = await _mediator.Send(query);
             return Ok(result);
         }

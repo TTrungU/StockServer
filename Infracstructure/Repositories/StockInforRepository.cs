@@ -121,5 +121,50 @@ namespace Infracstructure.Repositories
                         };
             return await query.FirstOrDefaultAsync();
         }
+
+        public async Task<StockInforDailyResponse?> GetStocInforBySearch(int stockInforId)
+        {
+            DateTime? today = await _context.StockDatas.Where(s => s.StockInforId == stockInforId).MaxAsync(sd => sd.Date);
+            DateTime lastDay = MinnWeekend(today.Value.AddDays(-1));
+            var todayPrice = await _context.StockDatas.Where(s => s.StockInforId == stockInforId && s.Date == today).Select(s=>s.Close).FirstOrDefaultAsync();
+            var lastDayPrice = await _context.StockDatas.Where(s => s.StockInforId == stockInforId && s.Date == lastDay).Select(s => s.Close).FirstOrDefaultAsync();
+            var symbol = await _context.StockInfors.Where(s => s.Id == stockInforId).Select(s => s.Symbol).FirstOrDefaultAsync();
+            var priceChange = todayPrice - lastDayPrice;
+            var percent = priceChange / todayPrice * 100;        
+            var roundedPernent = Math.Ceiling(percent.GetValueOrDefault() * 100) / 100;
+
+            return new StockInforDailyResponse()
+            {
+                Id = stockInforId,
+                Symbol = symbol,
+                todayPrice = todayPrice,
+                PercentChange = roundedPernent,
+                PriceChange = priceChange
+
+            };
+        }
+
+        private DateTime MinnWeekend(DateTime date)
+        {
+            if (date.DayOfWeek == DayOfWeek.Saturday)
+            {
+                return date.AddDays(-1); // Nếu là thứ Bảy, trừ thêm 1 ngày
+            }
+            else if (date.DayOfWeek == DayOfWeek.Sunday)
+            {
+                return date.AddDays(-2); // Nếu là Chủ Nhật, tăng trừ thêm 2 ngày
+            }
+            return date; // Nếu không phải cuối tuần, trả về ngày ban đầu
+        }
+
+        public async Task<IEnumerable<HyperLink>> SearchStockInfor(string Symbol)
+        {
+            var stock = await _context.StockInfors.Where(s => s.Symbol.ToLower().Contains(Symbol.Trim().ToLower()))
+                                                  .Select(s=> new HyperLink {Id = s.Id, Name = s.Symbol })
+                                                  .OrderBy(s=>s.Name)
+                                                  .ToListAsync();
+
+            return stock;
+        }
     }
 }

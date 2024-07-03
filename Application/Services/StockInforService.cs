@@ -32,6 +32,14 @@ namespace Application.Services
             return _mapper.Map<IEnumerable<StockInforResponse>>(stock);
         }
 
+        public async Task<StockInforDailyResponse> GetStockBySearchAsync(int stockInforId)
+        {
+            var stock  = await _stockInforRepository.GetStocInforBySearch(stockInforId);
+            if(stock == null)
+                throw new NotFoundException($"Stock not found:");
+            return stock;
+        }
+
         public async Task<StockInforResponse> GetStockInforAsync(string symbol, DateTime?startDay, DateTime? endDay)
         {
             var stock = await _stockInforRepository.GetSotckData(symbol, startDay, endDay);
@@ -48,6 +56,12 @@ namespace Application.Services
                 throw new NotFoundException("Not found stock");
             return stockinfor;
 
+        }
+
+        public async Task<IEnumerable<HyperLink>> SearchStockInforAsync(string symbol)
+        {
+            var stock = await _stockInforRepository.SearchStockInfor(symbol);
+            return stock;
         }
     }
 }
